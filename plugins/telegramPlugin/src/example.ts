@@ -5,7 +5,7 @@ import TelegramPlugin from "./telegramPlugin";
 // Replace <BOT_TOKEN> with your Telegram bot token
 const telegramPlugin = new TelegramPlugin({
   credentials: {
-    botToken: "<BOT_TOKEN>",
+    botToken: "7904341928:AAG6faU-GsMk7vTB-MgNM2gVmDdjCQrU9Po",
   },
 });
 
@@ -22,7 +22,7 @@ telegramPlugin.onPollAnswer((pollAnswer) => {
  * The agent will be able to send messages and pin messages automatically
  * Replace <API_TOKEN> with your API token
  */
-const autoReplyAgent = new GameAgent("<API_TOKEN>", {
+const autoReplyAgent = new GameAgent("apt-9e28ae652531985f53884967ccdad687", {
   name: "Telegram Bot",
   goal: "Auto reply message",
   description: "This agent will auto reply to messages",
@@ -36,6 +36,8 @@ const autoReplyAgent = new GameAgent("<API_TOKEN>", {
         telegramPlugin.createPollFunction,
         telegramPlugin.sendMediaFunction,
         telegramPlugin.deleteMessageFunction,
+        telegramPlugin.getTitlesFunction,
+        telegramPlugin.getShippingOptionsFunction
       ],
     }),
   ],
@@ -53,6 +55,8 @@ const autoReplyAgent = new GameAgent("<API_TOKEN>", {
   });
 
   await autoReplyAgent.init();
+  console.log("🎧 Bot is now polling Telegram for messages…");
+
   telegramPlugin.onMessage(async (msg) => {
     const agentTgWorker = autoReplyAgent.getWorkerById(telegramPlugin.getWorker().id);
     const task = "Reply to chat id: " + msg.chat.id + " and the incoming is message: " + msg.text + " and the message id is: " + msg.message_id;
@@ -66,79 +70,79 @@ const autoReplyAgent = new GameAgent("<API_TOKEN>", {
 /**
  * The agent is a Financial Advisor designed to provide financial advice and assistance
  */
-const financialAdvisorAgent = new GameAgent("<API_TOKEN>", {
-  name: "Financial Advisor Bot",
-  goal: "Provide financial advice and assistance",
-  description: "A smart bot designed to answer financial questions, provide investment tips, assist with budgeting, and manage financial tasks like pinning important messages or deleting outdated ones for better organization.",
-  workers: [
-    telegramPlugin.getWorker({
-      // Define the functions that the worker can perform, by default it will use the all functions defined in the plugin
-      functions: [
-        telegramPlugin.sendMessageFunction,
-        telegramPlugin.pinnedMessageFunction,
-        telegramPlugin.unPinnedMessageFunction,
-        telegramPlugin.createPollFunction,
-        telegramPlugin.sendMediaFunction,
-        telegramPlugin.deleteMessageFunction,
-      ],
-    }),
-  ],
-});
+// const financialAdvisorAgent = new GameAgent("<API_TOKEN>", {
+//   name: "Financial Advisor Bot",
+//   goal: "Provide financial advice and assistance",
+//   description: "A smart bot designed to answer financial questions, provide investment tips, assist with budgeting, and manage financial tasks like pinning important messages or deleting outdated ones for better organization.",
+//   workers: [
+//     telegramPlugin.getWorker({
+//       // Define the functions that the worker can perform, by default it will use the all functions defined in the plugin
+//       functions: [
+//         telegramPlugin.sendMessageFunction,
+//         telegramPlugin.pinnedMessageFunction,
+//         telegramPlugin.unPinnedMessageFunction,
+//         telegramPlugin.createPollFunction,
+//         telegramPlugin.sendMediaFunction,
+//         telegramPlugin.deleteMessageFunction,
+//       ],
+//     }),
+//   ],
+// });
 
-(async () => {
-  financialAdvisorAgent.setLogger((financialAdvisorAgent, message) => {
-    console.log(`-----[${financialAdvisorAgent.name}]-----`);
-    console.log(message);
-    console.log("\n");
-  });
+// (async () => {
+//   financialAdvisorAgent.setLogger((financialAdvisorAgent, message) => {
+//     console.log(`-----[${financialAdvisorAgent.name}]-----`);
+//     console.log(message);
+//     console.log("\n");
+//   });
 
-  await financialAdvisorAgent.init();
-  telegramPlugin.onMessage(async (msg) => {
-    const agentTgWorker = financialAdvisorAgent.getWorkerById(telegramPlugin.getWorker().id);
-    const task = "Reply to chat id: " + msg.chat.id + " and the incoming is message: " + msg.text + " and the message id is: " + msg.message_id;
+//   await financialAdvisorAgent.init();
+//   telegramPlugin.onMessage(async (msg) => {
+//     const agentTgWorker = financialAdvisorAgent.getWorkerById(telegramPlugin.getWorker().id);
+//     const task = "Reply to chat id: " + msg.chat.id + " and the incoming is message: " + msg.text + " and the message id is: " + msg.message_id;
 
-    await agentTgWorker.runTask(task, {
-      verbose: true, // Optional: Set to true to log each step
-    });
-  });
-})();
+//     await agentTgWorker.runTask(task, {
+//       verbose: true, // Optional: Set to true to log each step
+//     });
+//   });
+// })();
 
-/**
- * The agent is a Nutritionist Bot designed for nutritional counseling and support
- */
-const nutritionistAgent = new GameAgent("<API_TOKEN>", {
-  name: "Nutritionist Bot",
-  goal: "Provide evidence-based information and guidance about the impacts of food and nutrition on the health and wellbeing of humans.",
-  description: "A smart bot designed to answer food and nutrition questions, provide personalized nutrition plans, nutritional counseling, motivate and support users in achieving their health goals.",
-  workers: [
-    telegramPlugin.getWorker({
-      // Define the functions that the worker can perform, by default it will use the all functions defined in the plugin
-      functions: [
-        telegramPlugin.sendMessageFunction,
-        telegramPlugin.pinnedMessageFunction,
-        telegramPlugin.unPinnedMessageFunction,
-        telegramPlugin.createPollFunction,
-        telegramPlugin.sendMediaFunction,
-        telegramPlugin.deleteMessageFunction,
-      ],
-    }),
-  ],
-});
+// /**
+//  * The agent is a Nutritionist Bot designed for nutritional counseling and support
+//  */
+// const nutritionistAgent = new GameAgent("<API_TOKEN>", {
+//   name: "Nutritionist Bot",
+//   goal: "Provide evidence-based information and guidance about the impacts of food and nutrition on the health and wellbeing of humans.",
+//   description: "A smart bot designed to answer food and nutrition questions, provide personalized nutrition plans, nutritional counseling, motivate and support users in achieving their health goals.",
+//   workers: [
+//     telegramPlugin.getWorker({
+//       // Define the functions that the worker can perform, by default it will use the all functions defined in the plugin
+//       functions: [
+//         telegramPlugin.sendMessageFunction,
+//         telegramPlugin.pinnedMessageFunction,
+//         telegramPlugin.unPinnedMessageFunction,
+//         telegramPlugin.createPollFunction,
+//         telegramPlugin.sendMediaFunction,
+//         telegramPlugin.deleteMessageFunction,
+//       ],
+//     }),
+//   ],
+// });
 
-(async () => {
-  nutritionistAgent.setLogger((nutritionistAgent, message) => {
-    console.log(`-----[${nutritionistAgent.name}]-----`);
-    console.log(message);
-    console.log("\n");
-  });
+// (async () => {
+//   nutritionistAgent.setLogger((nutritionistAgent, message) => {
+//     console.log(`-----[${nutritionistAgent.name}]-----`);
+//     console.log(message);
+//     console.log("\n");
+//   });
 
-  await nutritionistAgent.init();
-  telegramPlugin.onMessage(async (msg) => {
-    const agentTgWorker = nutritionistAgent.getWorkerById(telegramPlugin.getWorker().id);
-    const task = "Reply professionally to chat id: " + msg.chat.id + " and the incoming is message: " + msg.text + " and the message id is: " + msg.message_id;
+//   await nutritionistAgent.init();
+//   telegramPlugin.onMessage(async (msg) => {
+//     const agentTgWorker = nutritionistAgent.getWorkerById(telegramPlugin.getWorker().id);
+//     const task = "Reply professionally to chat id: " + msg.chat.id + " and the incoming is message: " + msg.text + " and the message id is: " + msg.message_id;
 
-    await agentTgWorker.runTask(task, {
-      verbose: true, // Optional: Set to true to log each step
-    });
-  });
-})();
+//     await agentTgWorker.runTask(task, {
+//       verbose: true, // Optional: Set to true to log each step
+//     });
+//   });
+// })();

@@ -5,6 +5,7 @@ import {
     ExecutableGameFunctionStatus,
 } from "@virtuals-protocol/game";
 import TelegramBot from 'node-telegram-bot-api';
+import apiClient from './apiClient'; 
 
 interface ITelegramPluginOptions {
     id?: string;
@@ -26,7 +27,7 @@ class TelegramPlugin {
         this.name = options.name || "Telegram Worker";
         this.description =
             options.description ||
-            "A worker that executes tasks within Telegram. It can send messages, send media, create poll, pin messages, and delete messages.";
+            "A worker that executes tasks within Telegram. It can send messages, retrieve book titles that can be ordered, send media, create poll, pin messages, and delete messages.";
 
         this.telegramClient = new TelegramBot(options.credentials.botToken, { polling: true });
     }
@@ -50,15 +51,98 @@ class TelegramPlugin {
             id: this.id,
             name: this.name,
             description: this.description,
-            functions: data?.functions || [
+            functions: [
                 this.sendMessageFunction,
                 this.sendMediaFunction,
                 this.createPollFunction,
                 this.pinnedMessageFunction,
                 this.unPinnedMessageFunction,
-                this.deleteMessageFunction
+                this.deleteMessageFunction,
+                this.getTitlesFunction,
+                this.getShippingOptionsFunction
             ],
             getEnvironment: data?.getEnvironment,
+        });
+    }
+
+    get getTitlesFunction() {
+        return new GameFunction({
+            name: "get_titles",
+            description: "Gets available book titles that can be ordered.",
+            args: [] as const,
+            executable: async (args, logger) => {
+                try {
+                    logger(`Posting to /titles to fetch book titles`);
+                    const titles = await apiClient.postTitles({ query: "all" }); // Adjust request body as needed
+                    if (titles) {
+                        return new ExecutableGameFunctionResponse(
+                            ExecutableGameFunctionStatus.Done,
+                            JSON.stringify({ titles })
+                        );
+                    } else {
+                        return new ExecutableGameFunctionResponse(
+                            ExecutableGameFunctionStatus.Failed,
+                            "Failed to fetch book titles from the API"
+                        );
+                    }
+                } catch (e: any) {
+                    logger(`Error fetching titles: ${e.message}`);
+                    return new ExecutableGameFunctionResponse(
+                        ExecutableGameFunctionStatus.Failed,
+                        `Error fetching titles: ${e.message}`
+                    );
+                }
+            },
+        });
+    }
+
+    get getShippingOptionsFunction() {
+        return new GameFunction({
+            name: "get_shipping_options",
+            description: "Gets available shipping options for the books.",
+            args: [
+                { name: "street", description: "The street field of an address used to get the shipping options", type: "string" },
+                { name: "city", description: "The city field of an address used to get the shipping options", type: "string" },
+                { name: "postcode", description: "The postcode field of an address used to get the shipping options", type: "string" },
+                { name: "countrycode", description: "The countrycode field of an address used to get the shipping options", type: "string" },
+                //{ name: "title_id", description: "The titleId of the book you want to order", type: "string" },
+            ] as const,
+            executable: async (args, logger) => {
+                try {
+                    logger(`Posting to /shippingoptions to fetch book titles`);
+                    const titles = await apiClient.postShippingOptions({
+                        OrderItems: [
+                          {
+                            TitleId: "550e8400-e29b-41d4-a716-446655440001", // Dummy GUID
+                            Quantity: 1
+                          }
+                        ],
+                        Address: {
+                          Street: args.street,
+                          City: args.city,
+                          Postcode: args.postcode,
+                          CountryCode: args.countrycode
+                        }
+                      }); // Adjust request body as needed
+                    if (titles) {
+                        return new ExecutableGameFunctionResponse(
+                            ExecutableGameFunctionStatus.Done,
+                            JSON.stringify({ titles })
+                        );
+                    } else {
+                        return new ExecutableGameFunctionResponse(
+                            ExecutableGameFunctionStatus.Failed,
+                            "Failed to fetch book titles from the API"
+                        );
+                    }
+                } catch (e: any) {
+                    logger(`Error fetching titles: ${e.message}`);
+                    return new ExecutableGameFunctionResponse(
+                        ExecutableGameFunctionStatus.Failed,
+                        `Error fetching titles: ${e.message}`
+                    );
+                }
+            },
         });
     }
 
