@@ -7,7 +7,7 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "test": "jest --coverage",
-    "tsup": "tsup src/index.ts --dts --format cjs,esm --out-dir dist"
+    "tsup": "tsup src/example.ts --dts --format cjs,esm --out-dir dist"
   },
   "author": "",
   "license": "MIT",
@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@virtuals-protocol/game": "^0.1.7",
+    "axios": "^1.8.3",
     "node-telegram-bot-api": "^0.66.0",
     "tsup": "^8.3.5"
   },

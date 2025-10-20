@@ -1,1 +1,0 @@
-export { createDataPlugin, DataPlugin } from "./d.a.t.aPlugin"; 
